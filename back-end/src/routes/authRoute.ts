@@ -16,4 +16,16 @@ authRoute.get('/telegram', (c: Context) => {
     return c.json({message: "telegram"}, 200);
 });
 
+authRoute.post("/register", (c: Context) => {
+   return c.json({
+       success: true,
+   })
+});
+
+authRoute.post("/login", (c: Context) => {
+    return c.json({
+        success: true,
+    })
+});
+
 export default authRoute;
