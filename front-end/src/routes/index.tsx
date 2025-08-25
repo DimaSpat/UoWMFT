@@ -13,18 +13,18 @@ export const useTestData = routeLoader$(async () => {
 export default component$(() => {
     const test = useTestData();
   return (
-    <>
-        message from backend: {test.value.message}
-    </>
+      <>
+          <h1>Home</h1>
+      </>
   );
 });
 
 export const head: DocumentHead = {
-  title: "Welcome to Qwik",
+  title: "Home",
   meta: [
     {
       name: "description",
-      content: "Qwik site description",
+      content: "Univers of Woodcutting Mining Farming Trading",
     },
   ],
 };
