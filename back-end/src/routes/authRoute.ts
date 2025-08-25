@@ -8,9 +8,12 @@ type User = {
     password: string;
 }
 
-authRoute.get('/test', (c: Context) => {
-    console.log("authRoute");
-    return c.json({message: "hello"}, 200);
+authRoute.get('/google', (c: Context) => {
+    return c.json({message: "google"}, 200);
+});
+
+authRoute.get('/telegram', (c: Context) => {
+    return c.json({message: "telegram"}, 200);
 });
 
 export default authRoute;
