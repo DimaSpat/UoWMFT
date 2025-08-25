@@ -1,11 +1,15 @@
 import {$, component$, Signal, useSignal} from "@builder.io/qwik";
 import {DocumentHead, Link} from "@builder.io/qwik-city";
+import Interceptors from "undici/types/interceptors";
+import redirect = Interceptors.redirect;
 
 const BASE_URL = "http://localhost:5000/"; //process.env.BASE_URL ||
 
 const API_ENDPOINTS = {
     GOOGLE: BASE_URL+'api/auth/google',
     TELEGRAM: BASE_URL+'api/auth/telegram',
+    REGISTER: BASE_URL+'api/auth/register',
+    LOGIN: BASE_URL+'api/auth/login',
 }
 
 export default component$(() => {
@@ -20,7 +24,8 @@ export default component$(() => {
         result.value = undefined;
     });
 
-    const submitForm = $(async () => {
+    const submitForm = $(async (e:any) => {
+        e.preventDefault();
         isLoading.value = true;
         result.value = undefined;
 
@@ -28,14 +33,32 @@ export default component$(() => {
 
             const formData = Object.fromEntries(new FormData(formRef.value!).entries());
 
-            if (isSigningIn && formData.password !== formData.confirmPassword) {
-                result.value = {
-                    success: false,
-                    message: "Passwords do not match",
+            if (isSigningIn.value) {
+                if (formData.password !== formData.confirmPassword) {
+                    result.value = {
+                        success: false,
+                        message: "Passwords do not match",
+                    }
+                    formRef.value?.reset();
+                    isLoading.value = false;
+                    return;
                 }
-                formRef.value?.reset();
-                isLoading.value = false;
-                return;
+            }
+
+            const response = await fetch(
+                (isSigningIn.value ? API_ENDPOINTS.REGISTER : API_ENDPOINTS.LOGIN),
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                }
+            );
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = "/";
             }
         } catch (e) {
             console.log(e);
